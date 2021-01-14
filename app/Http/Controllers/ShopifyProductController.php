@@ -51,14 +51,19 @@ class ShopifyProductController extends Controller
             'page_info' => $next
         ]);
 
-        foreach ($products['body']['container']['products'] as $product) {
-            $this->createProduct($product);
-        }
+        if(!$products['errors']) {
+            foreach ($products['body']['container']['products'] as $product) {
+                $this->createProduct($product);
+            }
 
-        if (isset($products['link']['next'])) {
-            $this->storeProducts($products['link']['next']);
+            if (isset($products['link']['next'])) {
+                $this->storeProducts($products['link']['next']);
+            }
         }
+        else {
+            return redirect()->back()->with('error', 'Something went wrong, please try again!');
 
+        }
         return redirect()->back()->with('success', 'Products Synced Successfully!');
     }
 
